@@ -1,8 +1,15 @@
 {
     "name": "com.hns17.Utility",
-    "displayName": "HnsUtility",
-    "version": "1.0.0",
+    "displayName": "Hns Utility",
+    "version": "1.0.0-preview",
     "unity": "2018.4",
-    "license": "MIT",
-    "dependencies": {}
+	"keywords": ["task"],
+	"category": "Task",
+    "dependencies": {
+	},
+	"author": {
+		"name": "HNS17",
+		"email": "hns17@naver.com",
+		"url": "https://github.com/hns17/UnityUtility"
+	}
 }
