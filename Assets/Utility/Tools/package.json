@@ -1,0 +1,7 @@
+{
+  "name": "com.hns17.tools",
+  "version": "1.0.0",
+  "displayName": "unity tools",
+  "description": "unity helpful tools",
+  "unity": "2019.1"
+}

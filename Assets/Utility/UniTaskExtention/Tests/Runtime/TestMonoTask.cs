@@ -33,8 +33,5 @@ public class TestMonoTask : MonoTask
         else if(Input.GetKeyUp(KeyCode.Return)) {
             TestTask().Forget();
         }
-        else if(Input.GetKeyUp(KeyCode.Alpha1)) {
-            SceneManager.LoadSceneAsync(1);
-        }
     }
 }

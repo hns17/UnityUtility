@@ -50,8 +50,5 @@ public class TestTokenContainer : MonoBehaviour
         else if(Input.GetKeyUp(KeyCode.Alpha4)) {
             UnitaskTokenContainer.Cancel(obj);
         }
-        else if(Input.GetKeyUp(KeyCode.Space)) {
-            SceneManager.LoadSceneAsync(1);
-        }
     }
 }
