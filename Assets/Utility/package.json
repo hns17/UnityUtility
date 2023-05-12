@@ -3,5 +3,9 @@
   "version": "1.0.0",
   "displayName": "Hns17 Unity Utility",
   "description": "Tools, UnitaskExtention",
-  "unity": "2019.1"
- }
+  "unity": "2019.1",
+  "author": {
+    "name": "HNS17",
+    "email": "hns17@naver.com"
+  }
+}
