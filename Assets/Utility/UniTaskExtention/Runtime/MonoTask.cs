@@ -1,7 +1,7 @@
 using Cysharp.Threading.Tasks.Triggers;
 using System.Threading;
 using UnityEngine;
-
+using static UnitaskTokenContainer;
 
 /**
  *  @author : hns17@naver.com
@@ -10,7 +10,7 @@ using UnityEngine;
  *              - OnDisable, OnDistroy, Cancel 작업을 수행한다.
  */
 [RequireComponent(typeof(AsyncDisableAndDestroyTrigger))]
-public class MonoTask : MonoBehaviour
+public class MonoTask<T> : MonoBehaviour where T : MonoBehaviour
 {
     private AsyncDisableAndDestroyTrigger trigger;
 
@@ -20,14 +20,18 @@ public class MonoTask : MonoBehaviour
      *      - true  : 정상적으로 Cancel
      *      - false : Cancel Failed
      */
-    public bool Cancel()
+    public bool Cancel(int tokenID)
     {
         if(trigger == null) {
             return false;
         }
 
-        trigger.Cancel();
-        return true;
+        return trigger.Cancel(tokenID);
+    }
+
+    public bool Cancel(CancellationTokenData tokenData)
+    {
+        return Cancel(tokenData.TokenID);
     }
 
 
@@ -35,14 +39,12 @@ public class MonoTask : MonoBehaviour
      *  @brief  Token 발행
      *  @return 발행된 Token 반환
      */
-    public CancellationToken Token
+    public CancellationTokenData CreateToken()
     {
-        get {
-            if(trigger == null) {
-                this.TryGetComponent<AsyncDisableAndDestroyTrigger>(out trigger);
-            }
-
-            return trigger.CancellationToken;
+        if(trigger == null) {
+            this.TryGetComponent<AsyncDisableAndDestroyTrigger>(out trigger);
         }
+
+        return trigger.CancellationToken;
     }
 }

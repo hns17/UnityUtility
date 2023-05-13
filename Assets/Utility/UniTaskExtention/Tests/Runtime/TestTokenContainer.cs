@@ -7,10 +7,10 @@ using static UnitaskTokenContainer;
 
 public class TestTokenContainer : MonoBehaviour
 {
-    private TokenData global;
-    private TokenData scene;
-    private TokenData group;
-    private TokenData obj;
+    private CancellationTokenData global;
+    private CancellationTokenData scene;
+    private CancellationTokenData group;
+    private CancellationTokenData obj;
 
     void Start()
     {
@@ -28,7 +28,7 @@ public class TestTokenContainer : MonoBehaviour
     }
 
 
-    private async UniTaskVoid TestTask(string name, TokenData tokenData)
+    private async UniTaskVoid TestTask(string name, CancellationTokenData tokenData)
     {
         while(true) {
             await UniTask.Delay(1500, false, PlayerLoopTiming.Update, tokenData.Token);

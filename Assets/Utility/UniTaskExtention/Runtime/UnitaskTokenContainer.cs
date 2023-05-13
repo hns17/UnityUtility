@@ -12,26 +12,26 @@ public static class UnitaskTokenContainer
 {
     public enum TokenType { SCENE, GROUP, OBJECT, GLOBAL, NONE }
 
-    public struct TokenData
+    public struct CancellationTokenData
     {
         public CancellationToken Token { get; private set; }
         public int TokenID { get; private set; }
         
-        public TokenData(CancellationToken token, int handleId)
+        public CancellationTokenData(CancellationToken token, int handleId)
         {
             Token = token;
             TokenID = handleId;
         }
     }
-    private class TokenHandler : IDisposable
+    private class CancellationTokenHandler : IDisposable
     {
         private CancellationTokenSource source;
         public int TokenID { get; private set; }
 
-        public TokenData TokenData => new TokenData(source.Token, TokenID);
+        public CancellationTokenData CancellationTokenData => new CancellationTokenData(source.Token, TokenID);
 
 
-        public TokenHandler()
+        public CancellationTokenHandler()
         {
             source = new CancellationTokenSource();
             TokenID = source.GetHashCode();
@@ -46,36 +46,36 @@ public static class UnitaskTokenContainer
             }
         }
     }
-    private class SceneTokenHandler
+    private class SceneCancellationTokenHandler
     {
-        private TokenHandler sceneToken;
-        private Dictionary<string, TokenHandler> groupTokens = new Dictionary<string, TokenHandler>();
-        private Dictionary<int, TokenHandler> objectTokens = new Dictionary<int, TokenHandler>();
+        private CancellationTokenHandler sceneToken;
+        private Dictionary<string, CancellationTokenHandler> groupTokens = new Dictionary<string, CancellationTokenHandler>();
+        private Dictionary<int, CancellationTokenHandler> objectTokens = new Dictionary<int, CancellationTokenHandler>();
 
-        //Create TokenSource and return TokenData
+        //Create TokenSource and return CancellationTokenData
         #region GetToken Functions
-        public TokenData GetSceneToken()
+        public CancellationTokenData GetSceneToken()
         {
-            sceneToken ??= new TokenHandler();
-            return sceneToken.TokenData;
+            sceneToken ??= new CancellationTokenHandler();
+            return sceneToken.CancellationTokenData;
         }
 
-        public TokenData GetObjectToken()
+        public CancellationTokenData GetObjectToken()
         {
-            var newToken = new TokenHandler();
+            var newToken = new CancellationTokenHandler();
             objectTokens.Add(newToken.TokenID, newToken);
 
-            return newToken.TokenData;
+            return newToken.CancellationTokenData;
         }
 
-        public TokenData GetGroupToken(string groupKey)
+        public CancellationTokenData GetGroupToken(string groupKey)
         {
 
             if(!groupTokens.TryGetValue(groupKey, out var tokenInfo)) {
-                tokenInfo = new TokenHandler();
+                tokenInfo = new CancellationTokenHandler();
                 groupTokens[groupKey] = tokenInfo;
             }
-            return tokenInfo.TokenData;
+            return tokenInfo.CancellationTokenData;
         }
         #endregion
 
@@ -86,7 +86,7 @@ public static class UnitaskTokenContainer
             return RemoveToken(tokenID);
         }
 
-        public bool Cancel(in TokenData tokenData)
+        public bool Cancel(in CancellationTokenData tokenData)
         {
             return Cancel(tokenData.TokenID);
         }
@@ -176,7 +176,7 @@ public static class UnitaskTokenContainer
          *  @param  tokenID : 찾으려는 token id
          *  @return 찾은 tokenInfo
          */
-        private TokenHandler GetTokenInfo(int tokenID)
+        private CancellationTokenHandler GetTokenInfo(int tokenID)
         {
             //check scene token
             if(sceneToken != null && sceneToken.TokenID == tokenID) {
@@ -198,8 +198,8 @@ public static class UnitaskTokenContainer
         }
     }
 
-    private static Dictionary<string, TokenHandler> globalTokens = new Dictionary<string, TokenHandler>();
-    private static Dictionary<int, SceneTokenHandler> sceneTokenHandlers = new Dictionary<int, SceneTokenHandler>();
+    private static Dictionary<string, CancellationTokenHandler> globalTokens = new Dictionary<string, CancellationTokenHandler>();
+    private static Dictionary<int, SceneCancellationTokenHandler> sceneCancellationTokenHandlers = new Dictionary<int, SceneCancellationTokenHandler>();
 
     //called when the project start
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -211,45 +211,45 @@ public static class UnitaskTokenContainer
 
     private static void SceneManager_sceneUnloaded(Scene arg0)
     {
-        if(sceneTokenHandlers.TryGetValue(arg0.handle, out var handler)) {
+        if(sceneCancellationTokenHandlers.TryGetValue(arg0.handle, out var handler)) {
             handler.ClearToken();
-            sceneTokenHandlers.Remove(arg0.handle);
+            sceneCancellationTokenHandlers.Remove(arg0.handle);
         }
     }
 
 
-    //Create TokenSource and return TokenData
-    public static TokenData GetGlobalToken(string globalKey)
+    //Create TokenSource and return CancellationTokenData
+    public static CancellationTokenData GetGlobalToken(string globalKey)
     {
         if(globalTokens.TryGetValue(globalKey, out var tokenHandler)){
-            return tokenHandler.TokenData;
+            return tokenHandler.CancellationTokenData;
         }
         else {
-            var newTokenHandler = new TokenHandler();
-            globalTokens[globalKey] = newTokenHandler;
-            return newTokenHandler.TokenData;
+            var newCancellationTokenHandler = new CancellationTokenHandler();
+            globalTokens[globalKey] = newCancellationTokenHandler;
+            return newCancellationTokenHandler.CancellationTokenData;
         }
     }
 
-    public static TokenData GetSceneToken(Scene? targetScene = null)
+    public static CancellationTokenData GetSceneToken(Scene? targetScene = null)
     {
         int sceneHandle = GetTargetScene(targetScene).handle;
-        var sceneTokenHandler = GetSceneTokenHandler(sceneHandle, true);
-        return sceneTokenHandler.GetSceneToken();
+        var sceneCancellationTokenHandler = GetSceneCancellationTokenHandler(sceneHandle, true);
+        return sceneCancellationTokenHandler.GetSceneToken();
     }
 
-    public static TokenData GetGroupToken(string groupKey, Scene? targetScene = null)
+    public static CancellationTokenData GetGroupToken(string groupKey, Scene? targetScene = null)
     {
         int sceneHandle = GetTargetScene(targetScene).handle;
-        var sceneTokenHandler = GetSceneTokenHandler(sceneHandle, true);
-        return sceneTokenHandler.GetGroupToken(groupKey);
+        var sceneCancellationTokenHandler = GetSceneCancellationTokenHandler(sceneHandle, true);
+        return sceneCancellationTokenHandler.GetGroupToken(groupKey);
     }
 
-    public static TokenData GetObjectToken(Scene? targetScene = null)
+    public static CancellationTokenData GetObjectToken(Scene? targetScene = null)
     {
         int sceneHandle = GetTargetScene(targetScene).handle;
-        var sceneTokenHandler = GetSceneTokenHandler(sceneHandle, true);
-        return sceneTokenHandler.GetObjectToken();
+        var sceneCancellationTokenHandler = GetSceneCancellationTokenHandler(sceneHandle, true);
+        return sceneCancellationTokenHandler.GetObjectToken();
     }
 
 
@@ -293,7 +293,7 @@ public static class UnitaskTokenContainer
         return false;
     }
 
-    public static bool Cancel(in TokenData tokenData)
+    public static bool Cancel(in CancellationTokenData tokenData)
     {
         return Cancel(tokenData.TokenID);
     }
@@ -301,7 +301,7 @@ public static class UnitaskTokenContainer
 
     private static bool CancellationSceneToken(int sceneHandle, int tokenID)
     {
-        var handler = GetSceneTokenHandler(sceneHandle);
+        var handler = GetSceneCancellationTokenHandler(sceneHandle);
         if(handler == null) {
             return false;
         }
@@ -310,7 +310,7 @@ public static class UnitaskTokenContainer
 
     private static bool CancellationSceneToken(int sceneHandle, string key)
     {
-        var handler = GetSceneTokenHandler(sceneHandle);
+        var handler = GetSceneCancellationTokenHandler(sceneHandle);
         if(handler == null) {
             return false;
         }
@@ -318,15 +318,15 @@ public static class UnitaskTokenContainer
     }
 
 
-    private static SceneTokenHandler GetSceneTokenHandler(int sceneHandle, bool isCreate = false)
+    private static SceneCancellationTokenHandler GetSceneCancellationTokenHandler(int sceneHandle, bool isCreate = false)
     {
-        if(sceneTokenHandlers.TryGetValue(sceneHandle, out var tokenHandler)) {
+        if(sceneCancellationTokenHandlers.TryGetValue(sceneHandle, out var tokenHandler)) {
             return tokenHandler;
         }
         else if(isCreate) {
-            var newSceneTokenHandler = new SceneTokenHandler();
-            sceneTokenHandlers[sceneHandle] = newSceneTokenHandler;
-            return newSceneTokenHandler;
+            var newSceneCancellationTokenHandler = new SceneCancellationTokenHandler();
+            sceneCancellationTokenHandlers[sceneHandle] = newSceneCancellationTokenHandler;
+            return newSceneCancellationTokenHandler;
         }
 
         return null;

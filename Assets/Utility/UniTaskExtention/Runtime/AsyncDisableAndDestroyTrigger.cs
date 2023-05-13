@@ -1,7 +1,8 @@
 using Cysharp.Threading.Tasks.Triggers;
+using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-
+using static UnitaskTokenContainer;
 
 namespace Cysharp.Threading.Tasks
 {
@@ -13,13 +14,13 @@ namespace Cysharp.Threading.Tasks
     public static class UnityCancellationTask
     {
         /// <summary>This CancellationToken is canceled when the MonoBehaviour will be destroyed.</summary>
-        public static CancellationToken GetCancellationTokenOnDisableAndDestroy(this GameObject gameObject)
+        public static CancellationTokenData GetCancellationTokenOnDisableAndDestroy(this GameObject gameObject)
         {
             return gameObject.GetAsyncDisableAndDestroyTrigger().CancellationToken;
         }
 
         /// <summary>This CancellationToken is canceled when the MonoBehaviour will be destroyed.</summary>
-        public static CancellationToken GetCancellationTokenOnDisableAndDestroy(this Component component)
+        public static CancellationTokenData GetCancellationTokenOnDisableAndDestroy(this Component component)
         {
             return component.GetAsyncDisableAndDestroyTrigger().CancellationToken;
         }
@@ -75,72 +76,53 @@ namespace Cysharp.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncDisableAndDestroyTrigger : MonoBehaviour
     {
-        bool awakeCalled = false;
-        bool called = false;
-        public CancellationTokenSource CancellationTokenSource { get; private set; }
+        private Dictionary<int, CancellationTokenData> tokenDatas = new Dictionary<int, CancellationTokenData>();
 
-        public CancellationToken CancellationToken
+        public CancellationTokenData CancellationToken
         {
             get {
-                if(CancellationTokenSource == null) {
-                    CancellationTokenSource = new CancellationTokenSource();
+                if(!gameObject.activeSelf) {
+                    var errMsg = string.Format("Couldn't be getted because the game object '{0}' is inactive!", this.gameObject.name);
+                    throw new System.Exception(errMsg);
                 }
 
-                if(!awakeCalled) {
-                    PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, new AwakeMonitor(this));
-                }
-
-                called = false;
-                return CancellationTokenSource.Token;
+                var newCancellationTokenData = UnitaskTokenContainer.GetObjectToken();
+                tokenDatas.Add(newCancellationTokenData.TokenID, newCancellationTokenData);
+                return newCancellationTokenData;
             }
         }
 
-        public void Cancel()
+        public bool Cancel(int tokenID)
         {
-            if(!called) {
-                called = true;
-
-                CancellationTokenSource?.Cancel();
-                CancellationTokenSource?.Dispose();
-
-                CancellationTokenSource = null;
+            var res = false;
+            if(tokenDatas.TryGetValue(tokenID, out var tokenData)) {
+                res = UnitaskTokenContainer.Cancel(tokenID);
+                tokenDatas.Remove(tokenID);
             }
+            return res;
         }
 
-        void Awake()
+        public bool Cancel(CancellationTokenData targetData)
         {
-            awakeCalled = true;
+            return Cancel(targetData.TokenID);
+        }
+
+        public void Clear()
+        {
+            foreach(var tokenData in tokenDatas) {
+                UnitaskTokenContainer.Cancel(tokenData.Value);
+            }
+            tokenDatas.Clear();
         }
 
         void OnDisable()
         {
-            Cancel();
+            Clear();
         }
 
         void OnDestroy()
         {
-            Cancel();
-        }
-
-
-        class AwakeMonitor : IPlayerLoopItem
-        {
-            readonly AsyncDisableAndDestroyTrigger trigger;
-
-            public AwakeMonitor(AsyncDisableAndDestroyTrigger trigger)
-            {
-                this.trigger = trigger;
-            }
-
-            public bool MoveNext()
-            {
-                if(trigger.called) return false;
-                if(trigger == null) {
-                    trigger.OnDestroy();
-                    return false;
-                }
-                return true;
-            }
+            Clear();
         }
     }
 }
