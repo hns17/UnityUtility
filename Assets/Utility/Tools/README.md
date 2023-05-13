@@ -17,7 +17,7 @@
 
 - Graphics Component에 포함된 RaycastTarget 정보를 하이어라키의 토글을 통해 설정할 수 있다.
 
-![image-20230513064332557](C:\Users\hns17\AppData\Roaming\Typora\typora-user-images\image-20230513064332557.png)
+![image-20230513064332557](https://raw.githubusercontent.com/hns17/ImageContainer/main/img/image-20230513064332557.png)
 
 
 
