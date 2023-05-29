@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Scripts/ConsoleJsonViewer/Editor/ConsoleJsonViewer.uss?fileID=7433441132597879392&amp;guid=f2d35262c1d2e664db1849a1fd770f04&amp;type=3#ConsoleJsonViewer" />
+    <uie:Toolbar style="border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px; margin-left: 2px; margin-right: 0; margin-top: 1px; margin-bottom: 1px; border-left-color: rgb(94, 91, 91); border-right-color: rgb(94, 91, 91); border-top-color: rgb(94, 91, 91); border-bottom-color: rgb(94, 91, 91); padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;">
+        <uie:ToolbarToggle focusable="false" label="Link Console" value="true" name="LinkConsole" style="flex-shrink: 0; flex-grow: 0; position: relative; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
+        <uie:ToolbarToggle focusable="false" label="ToJson" value="true" name="ConvertJson" style="margin-left: -1px; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
+        <uie:ToolbarToggle focusable="false" label="AutoCheck" value="true" name="AutoCheck" style="margin-left: -1px; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
+        <ui:VisualElement style="flex-shrink: 0; flex-grow: 1; flex-direction: row-reverse;">
+            <ui:Label display-tooltip-when-elided="true" name="StateText" style="margin-top: 2px; margin-right: 10px;" />
+        </ui:VisualElement>
+    </uie:Toolbar>
+    <ui:Foldout text="Viewer" style="border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px; border-left-color: rgb(94, 91, 91); border-right-color: rgb(94, 91, 91); border-top-color: rgb(94, 91, 91); border-bottom-color: rgb(94, 91, 91); padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; margin-left: 1px; margin-right: 1px; margin-top: 1px; margin-bottom: 1px;">
+        <ui:TextField picking-mode="Ignore" value="filler text" readonly="false" multiline="true" style="flex-grow: 1; flex-shrink: 1; flex-direction: column; padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; min-height: 150px;" />
+    </ui:Foldout>
+</ui:UXML>

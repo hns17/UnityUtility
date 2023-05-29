@@ -1,0 +1,11 @@
+{
+  "name": "com.hns17.console_jsonviewer",
+  "version": "0.1.0",
+  "displayName": "ConsoleJsonViewer",
+  "description": "콘솔 윈도우의 로그가 Json인 경우 Json Format으로 출력하는 뷰어입니다.",
+  "unity": "2020.1",
+  "author": {
+    "name": "HNS17",
+    "email": "hns17@naver.com"
+  }
+}

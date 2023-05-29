@@ -1,0 +1,10 @@
+Label {
+    min-width: auto;
+}
+
+.unity-toolbar-toggle {
+    border-left-color: rgba(94, 91, 91, 255);
+    border-right-color: rgba(94, 91, 91, 255);
+    border-top-color: rgba(94, 91, 91, 255);
+    border-bottom-color: rgba(94, 91, 91, 255);
+}
