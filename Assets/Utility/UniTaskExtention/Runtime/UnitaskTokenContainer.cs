@@ -5,7 +5,6 @@ using System.Threading;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
-using UnityEngine.Pool;
 using UnityEngine.SceneManagement;
 
 public static class UnitaskTokenContainer
@@ -140,9 +139,9 @@ public static class UnitaskTokenContainer
         #endregion
 
         /**
-         *  @brief  ÅäÅ«À» »èÁ¦ÇÑ´Ù.
-         *  @param  tokenID : »èÁ¦ÇÏ·Á´Â token id
-         *  @return true : tokenÀÌ ÀÖ´Â °æ¿ì, false : tokenÀÌ ¾ø´Â °æ¿ì
+         *  @brief  í† í°ì„ ì‚­ì œí•œë‹¤.
+         *  @param  tokenID : ì‚­ì œí•˜ë ¤ëŠ” token id
+         *  @return true : tokenì´ ìˆëŠ” ê²½ìš°, false : tokenì´ ì—†ëŠ” ê²½ìš°
          */
         private bool RemoveToken(int tokenID)
         {
@@ -172,9 +171,9 @@ public static class UnitaskTokenContainer
         }
 
         /**
-         *  @brief  tokenID¿Í µ¿ÀÏÇÑ Token Á¤º¸°¡ ÀÖ´ÂÁö È®ÀÎÇÑ´Ù.
-         *  @param  tokenID : Ã£À¸·Á´Â token id
-         *  @return Ã£Àº tokenInfo
+         *  @brief  tokenIDì™€ ë™ì¼í•œ Token ì •ë³´ê°€ ìˆëŠ”ì§€ í™•ì¸í•œë‹¤.
+         *  @param  tokenID : ì°¾ìœ¼ë ¤ëŠ” token id
+         *  @return ì°¾ì€ tokenInfo
          */
         private CancellationTokenHandler GetTokenInfo(int tokenID)
         {
@@ -255,13 +254,13 @@ public static class UnitaskTokenContainer
 
     public static bool Cancel(string key)
     {
-        //ÇöÀç ¾À¿¡¼­ Ã£±â
+        //í˜„ì¬ ì”¬ì—ì„œ ì°¾ê¸°
         var activeScene = SceneManager.GetActiveScene();
         int sceneHandle = activeScene.handle;
 
         CancellationSceneToken(sceneHandle, key);
 
-        //global token¿¡¼­ Ã£±â
+        //global tokenì—ì„œ ì°¾ê¸°
         if(globalTokens.TryGetValue(key, out var handler)) {
             handler.Dispose();
             globalTokens.Remove(key);
@@ -275,12 +274,12 @@ public static class UnitaskTokenContainer
         var activeScene = SceneManager.GetActiveScene();
         int sceneHandle = activeScene.handle;
 
-        //ÇöÀç ¾À¿¡¼­ ÅäÅ« Ã£±â
+        //í˜„ì¬ ì”¬ì—ì„œ í† í° ì°¾ê¸°
         if(CancellationSceneToken(sceneHandle, tokenID)) {
             return true;
         }
 
-        //global token¿¡¼­ Ã£±â
+        //global tokenì—ì„œ ì°¾ê¸°
         foreach(var item in globalTokens) {
             var tokenHandler = item.Value;
             if(tokenHandler.TokenID == tokenID) {

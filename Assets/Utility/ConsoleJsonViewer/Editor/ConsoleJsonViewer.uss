@@ -3,8 +3,14 @@ Label {
 }
 
 .unity-toolbar-toggle {
-    border-left-color: rgba(94, 91, 91, 255);
-    border-right-color: rgba(94, 91, 91, 255);
-    border-top-color: rgba(94, 91, 91, 255);
-    border-bottom-color: rgba(94, 91, 91, 255);
+    border-left-color: rgb(94, 91, 91);
+    border-right-color: rgb(94, 91, 91);
+    border-top-color: rgb(94, 91, 91);
+    border-bottom-color: rgb(94, 91, 91);
+}
+
+#unity-text-input {
+    -unity-text-align: upper-left;
+    margin-bottom: 0;
+    white-space: normal;
 }
