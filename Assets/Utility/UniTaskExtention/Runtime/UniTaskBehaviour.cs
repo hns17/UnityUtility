@@ -1,23 +1,22 @@
-using Cysharp.Threading.Tasks.Triggers;
-using System.Threading;
 using UnityEngine;
-using static UnitaskTokenContainer;
+using Cysharp.Threading.Tasks.Triggers;
+using static UniTaskTokenContainer;
 
 /**
  *  @author : hns17@naver.com
- *  @brief  : Monobehaviour ¿ë CancellationToken °ü¸®¿ë Å¬·¡½º
- *              - UniTask¸¦ ÄÚ·çÆ¾ Ã³·³ »ç¿ëÇÏ±â À§ÇØ ÀÛ¼º
- *              - OnDisable, OnDistroy, Cancel ÀÛ¾÷À» ¼öÇàÇÑ´Ù.
+ *  @brief  : Monobehaviour ìš© CancellationToken ê´€ë¦¬ìš© í´ë˜ìŠ¤
+ *              - UniTaskë¥¼ ì½”ë£¨í‹´ ì²˜ëŸ¼ ì‚¬ìš©í•˜ê¸° ìœ„í•´ ì‘ì„±
+ *              - OnDisable, OnDistroy, Cancel ì‘ì—…ì„ ìˆ˜í–‰í•œë‹¤.
  */
 [RequireComponent(typeof(AsyncDisableAndDestroyTrigger))]
-public class MonoTask<T> : MonoBehaviour where T : MonoBehaviour
+public class UniTaskBehaviour<T> : MonoBehaviour where T : MonoBehaviour
 {
     private AsyncDisableAndDestroyTrigger trigger;
 
     /**
-     *  @brief  : Token ¹ßÇà
+     *  @brief  : Token ë°œí–‰
      *  @return
-     *      - true  : Á¤»óÀûÀ¸·Î Cancel
+     *      - true  : ì •ìƒì ìœ¼ë¡œ Cancel
      *      - false : Cancel Failed
      */
     public bool Cancel(int tokenID)
@@ -36,8 +35,8 @@ public class MonoTask<T> : MonoBehaviour where T : MonoBehaviour
 
 
     /**
-     *  @brief  Token ¹ßÇà
-     *  @return ¹ßÇàµÈ Token ¹İÈ¯
+     *  @brief  Token ë°œí–‰
+     *  @return ë°œí–‰ëœ Token ë°˜í™˜
      */
     public CancellationTokenData CreateToken()
     {

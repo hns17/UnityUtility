@@ -1,13 +1,10 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using Unity.VisualScripting;
-using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
+using System.Threading;
+using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
-public static class UnitaskTokenContainer
+public static class UniTaskTokenContainer
 {
     public enum TokenType { SCENE, GROUP, OBJECT, GLOBAL, NONE }
 
@@ -207,7 +204,6 @@ public static class UnitaskTokenContainer
         SceneManager.sceneUnloaded += SceneManager_sceneUnloaded;
     }
 
-
     private static void SceneManager_sceneUnloaded(Scene arg0)
     {
         if(sceneCancellationTokenHandlers.TryGetValue(arg0.handle, out var handler)) {
@@ -216,7 +212,51 @@ public static class UnitaskTokenContainer
         }
     }
 
+    private static bool CancellationSceneToken(int sceneHandle, int tokenID)
+    {
+        var handler = GetSceneCancellationTokenHandler(sceneHandle);
+        if(handler == null) {
+            return false;
+        }
+        return handler.Cancel(tokenID);
+    }
 
+    private static bool CancellationSceneToken(int sceneHandle, string key)
+    {
+        var handler = GetSceneCancellationTokenHandler(sceneHandle);
+        if(handler == null) {
+            return false;
+        }
+        return handler.Cancel(key);
+    }
+
+    private static SceneCancellationTokenHandler GetSceneCancellationTokenHandler(int sceneHandle, bool isCreate = false)
+    {
+        if(sceneCancellationTokenHandlers.TryGetValue(sceneHandle, out var tokenHandler)) {
+            return tokenHandler;
+        }
+        else if(isCreate) {
+            var newSceneCancellationTokenHandler = new SceneCancellationTokenHandler();
+            sceneCancellationTokenHandlers[sceneHandle] = newSceneCancellationTokenHandler;
+            return newSceneCancellationTokenHandler;
+        }
+
+        return null;
+    }
+
+    private static Scene GetTargetScene(Scene? scene)
+    {
+        if(scene == null || scene.Value.buildIndex == -1) {
+            var activeScene = SceneManager.GetActiveScene();
+            if(activeScene.buildIndex == -1) {
+                throw new InvalidOperationException("not found target scene data");
+            }
+            return activeScene;
+        }
+
+        return scene.Value;
+    }
+    
     //Create TokenSource and return CancellationTokenData
     public static CancellationTokenData GetGlobalToken(string globalKey)
     {
@@ -250,7 +290,6 @@ public static class UnitaskTokenContainer
         var sceneCancellationTokenHandler = GetSceneCancellationTokenHandler(sceneHandle, true);
         return sceneCancellationTokenHandler.GetObjectToken();
     }
-
 
     public static bool Cancel(string key)
     {
@@ -288,59 +327,11 @@ public static class UnitaskTokenContainer
                 return true;
             }
         }
-
         return false;
     }
 
     public static bool Cancel(in CancellationTokenData tokenData)
     {
         return Cancel(tokenData.TokenID);
-    }
-
-
-    private static bool CancellationSceneToken(int sceneHandle, int tokenID)
-    {
-        var handler = GetSceneCancellationTokenHandler(sceneHandle);
-        if(handler == null) {
-            return false;
-        }
-        return handler.Cancel(tokenID);
-    }
-
-    private static bool CancellationSceneToken(int sceneHandle, string key)
-    {
-        var handler = GetSceneCancellationTokenHandler(sceneHandle);
-        if(handler == null) {
-            return false;
-        }
-        return handler.Cancel(key);
-    }
-
-
-    private static SceneCancellationTokenHandler GetSceneCancellationTokenHandler(int sceneHandle, bool isCreate = false)
-    {
-        if(sceneCancellationTokenHandlers.TryGetValue(sceneHandle, out var tokenHandler)) {
-            return tokenHandler;
-        }
-        else if(isCreate) {
-            var newSceneCancellationTokenHandler = new SceneCancellationTokenHandler();
-            sceneCancellationTokenHandlers[sceneHandle] = newSceneCancellationTokenHandler;
-            return newSceneCancellationTokenHandler;
-        }
-
-        return null;
-    }
-
-    private static Scene GetTargetScene(Scene? scene)
-    {
-        if(scene == null || scene.Value.buildIndex == -1) {
-            var activeScene = SceneManager.GetActiveScene();
-            if(activeScene.buildIndex == -1) {
-                throw new InvalidOperationException("not found target scene data");
-            }
-            return activeScene;
-        }
-
-        return scene.Value;
     }
 }

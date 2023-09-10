@@ -1,14 +1,9 @@
-using Cysharp.Threading.Tasks;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static UnitaskTokenContainer;
+using Cysharp.Threading.Tasks;
+using static UniTaskTokenContainer;
 
-public class TestMonoTask : MonoTask<TestMonoTask>
+public class TestMonoTask : UniTaskBehaviour<TestMonoTask>
 {
     private CancellationTokenData tokenData;
 

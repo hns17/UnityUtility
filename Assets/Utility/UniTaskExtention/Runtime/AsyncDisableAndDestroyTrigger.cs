@@ -1,15 +1,14 @@
-using Cysharp.Threading.Tasks.Triggers;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
-using static UnitaskTokenContainer;
+using Cysharp.Threading.Tasks.Triggers;
+using static UniTaskTokenContainer;
 
 namespace Cysharp.Threading.Tasks
 {
     /**
      * @author  hns17@naver.com
-     * @brief   Monobehaviour¿¡¼­ »ç¿ëÇÒ CancellationTokenSource °ü¸®¸¦ À§ÇÑ Extention Method
-     *          OnDisable ¹× OnDestroy°¡ È£ÃâµÇ¸é Cancel Ã³¸®µÇ´Â ÅäÅ«À» ¸®ÅÏÇÑ´Ù.
+     * @brief   Monobehaviourì—ì„œ ì‚¬ìš©í•  CancellationTokenSource ê´€ë¦¬ë¥¼ ìœ„í•œ Extention Method
+     *          OnDisable ë° OnDestroyê°€ í˜¸ì¶œë˜ë©´ Cancel ì²˜ë¦¬ë˜ëŠ” í† í°ì„ ë¦¬í„´í•œë‹¤.
      */
     public static class UnityCancellationTask
     {
@@ -33,8 +32,8 @@ namespace Cysharp.Threading.Tasks.Triggers
 {
     /**
      * @author  hns17@naver.com
-     * @brief   CancellationToken °ü¸®¿ë ÄÄÆ÷³ÍÆ®(AsyncDisableAndDestroyTrigger)¸¦ ¹İÈ¯ÇÑ´Ù.
-     *          ¿ÀºêÁ§Æ®¿¡ ÄÄÆ÷³ÍÆ®°¡ ¾ø´Â °æ¿ì Ãß°¡ ÈÄ ¹İÈ¯
+     * @brief   CancellationToken ê´€ë¦¬ìš© ì»´í¬ë„ŒíŠ¸(AsyncDisableAndDestroyTrigger)ë¥¼ ë°˜í™˜í•œë‹¤.
+     *          ì˜¤ë¸Œì íŠ¸ì— ì»´í¬ë„ŒíŠ¸ê°€ ì—†ëŠ” ê²½ìš° ì¶”ê°€ í›„ ë°˜í™˜
      */
     public static partial class AsyncTriggerExtensions
     {
@@ -70,8 +69,8 @@ namespace Cysharp.Threading.Tasks.Triggers
 
     /**
      * @author  hns17@naver.com
-     * @brief   CancellationToken °ü¸®¿ë Å¬·¡½º
-     *          MonobehaviourÀÇ ÀÌº¥Æ® ÇÔ¼ö OnDisable, OnDestroy ÇÔ¼ö°¡ È£ÃâµÇ¸é Cancel µÇ´Â Token °ü¸®¿ë ÄÄÆ÷³ÍÆ®
+     * @brief   CancellationToken ê´€ë¦¬ìš© í´ë˜ìŠ¤
+     *          Monobehaviourì˜ ì´ë²¤íŠ¸ í•¨ìˆ˜ OnDisable, OnDestroy í•¨ìˆ˜ê°€ í˜¸ì¶œë˜ë©´ Cancel ë˜ëŠ” Token ê´€ë¦¬ìš© ì»´í¬ë„ŒíŠ¸
      */
     [DisallowMultipleComponent]
     public sealed class AsyncDisableAndDestroyTrigger : MonoBehaviour
@@ -86,7 +85,7 @@ namespace Cysharp.Threading.Tasks.Triggers
                     throw new System.Exception(errMsg);
                 }
 
-                var newCancellationTokenData = UnitaskTokenContainer.GetObjectToken();
+                var newCancellationTokenData = UniTaskTokenContainer.GetObjectToken();
                 tokenDatas.Add(newCancellationTokenData.TokenID, newCancellationTokenData);
                 return newCancellationTokenData;
             }
@@ -96,7 +95,7 @@ namespace Cysharp.Threading.Tasks.Triggers
         {
             var res = false;
             if(tokenDatas.TryGetValue(tokenID, out var tokenData)) {
-                res = UnitaskTokenContainer.Cancel(tokenID);
+                res = UniTaskTokenContainer.Cancel(tokenID);
                 tokenDatas.Remove(tokenID);
             }
             return res;
@@ -110,7 +109,7 @@ namespace Cysharp.Threading.Tasks.Triggers
         public void Clear()
         {
             foreach(var tokenData in tokenDatas) {
-                UnitaskTokenContainer.Cancel(tokenData.Value);
+                UniTaskTokenContainer.Cancel(tokenData.Value);
             }
             tokenDatas.Clear();
         }

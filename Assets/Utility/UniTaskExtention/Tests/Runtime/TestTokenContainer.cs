@@ -1,9 +1,6 @@
 using Cysharp.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using static UnitaskTokenContainer;
+using static UniTaskTokenContainer;
 
 public class TestTokenContainer : MonoBehaviour
 {
@@ -11,20 +8,23 @@ public class TestTokenContainer : MonoBehaviour
     private CancellationTokenData scene;
     private CancellationTokenData group;
     private CancellationTokenData obj;
+    
+    [SerializeField] private UniTaskTokenObject tokenObject;
 
     void Start()
     {
-        global = UnitaskTokenContainer.GetGlobalToken("GlobalToken");
-        scene = UnitaskTokenContainer.GetSceneToken();
-        group = UnitaskTokenContainer.GetGroupToken("GroupToken");
-        obj = UnitaskTokenContainer.GetObjectToken();
+        global = UniTaskTokenContainer.GetGlobalToken("GlobalToken");
+        scene = UniTaskTokenContainer.GetSceneToken();
+        group = UniTaskTokenContainer.GetGroupToken("GroupToken");
+        obj = UniTaskTokenContainer.GetObjectToken();
 
         TestTask("global", global).Forget();
         TestTask("scene", scene).Forget();
         TestTask("group_task0", group).Forget();
         TestTask("group_task1", group).Forget();
         TestTask("obj0", obj).Forget();
-        TestTask("obj1", UnitaskTokenContainer.GetObjectToken()).Forget();
+        
+        TestTask("token_object", tokenObject.GetTokenData()).Forget();
     }
 
 
@@ -39,16 +39,20 @@ public class TestTokenContainer : MonoBehaviour
     private void Update()
     {
         if(Input.GetKeyUp(KeyCode.Alpha1)) {
-            UnitaskTokenContainer.Cancel("GlobalToken");
+            UniTaskTokenContainer.Cancel("GlobalToken");
         }
         else if(Input.GetKeyUp(KeyCode.Alpha2)) {
-            UnitaskTokenContainer.Cancel(scene);
+            UniTaskTokenContainer.Cancel(scene);
         }
         else if(Input.GetKeyUp(KeyCode.Alpha3)) {
-            UnitaskTokenContainer.Cancel(group.TokenID);
+            UniTaskTokenContainer.Cancel(group.TokenID);
         }
         else if(Input.GetKeyUp(KeyCode.Alpha4)) {
-            UnitaskTokenContainer.Cancel(obj);
+            UniTaskTokenContainer.Cancel(obj);
+        }
+        else if(Input.GetKeyUp(KeyCode.Alpha5))
+        {
+            tokenObject.Cancel();
         }
     }
 }
