@@ -2,6 +2,7 @@
 
 - Unitask 편의 기능 확장
   - Cancellation을 위한 토큰 생성 및 관리 기능 추가
+- Version 1.1.0
 
 
 
@@ -49,7 +50,7 @@
 ### Struct & Function
 
 1. CancellationTokenData
-   - UnitaskTokenContainer를 통해 발행한 Token Data
+   - UniTaskTokenContainer를 통해 발행한 Token Data
      - TokenID(int)
        - 발행된 CancellationToken의 고유 id
      - Token(CancellationToken)
@@ -61,16 +62,16 @@
 
 ```
 //Get GlobalToken
-CancellationTokenData global = UnitaskTokenContainer.GetGlobalToken("GlobalToken");
+CancellationTokenData global = UniTaskTokenContainer.GetGlobalToken("GlobalToken");
 
 //Get SceneToken
-CancellationTokenData scene = UnitaskTokenContainer.GetSceneToken();
+CancellationTokenData scene = UniTaskTokenContainer.GetSceneToken();
 
 //Get GroupToken
-CancellationTokenData group = UnitaskTokenContainer.GetGroupToken("GroupToken");
+CancellationTokenData group = UniTaskTokenContainer.GetGroupToken("GroupToken");
 
 //Get ObjectToken
-CancellationTokenData obj = UnitaskTokenContainer.GetObjectToken();
+CancellationTokenData obj = UniTaskTokenContainer.GetObjectToken();
 ```
 
 3. Cancel
@@ -80,19 +81,17 @@ CancellationTokenData obj = UnitaskTokenContainer.GetObjectToken();
 
 ```
 bool isCancel = false;
-CancellationTokenData global = UnitaskTokenContainer.GetGlobalToken("GlobalToken");
+CancellationTokenData global = UniTaskTokenContainer.GetGlobalToken("GlobalToken");
 
 //TokenID를 통해 파괴
-isCancel = UnitaskTokenContainer.Cancel(group.TokenID);
+isCancel = UniTaskTokenContainer.Cancel(group.TokenID);
 
 //string Key값을 통해 파괴
-isCancel = UnitaskTokenContainer.Cancel("GlobalToken");
+isCancel = UniTaskTokenContainer.Cancel("GlobalToken");
 
 //TokenData를 통해 파괴
-isCancel = UnitaskTokenContainer.Cancel(global);
+isCancel = UniTaskTokenContainer.Cancel(global);
 ```
-
-
 
 
 
@@ -117,18 +116,18 @@ public class XXXXXX : MonoBehaviour{
 
 
 
-## MonoTask
+## UniTaskBehaviour
 
 - GetCancellationTokenOnDisableAndDestroy 함수는 내부적으로 GetComponent 및 AddComponent 함수를 호출한다.
-- 반복적으로 사용 할 경우 Overhead 문제가 있으므로 이를 해결하기 위해 MonoTask를 상속받아서 사용한다.
-- MonoTask는 AddComponent 연산을 수행하지 않으며, 처음 Token 발행시 한번만 GetComponent 연산을 수행한다.
+- 반복적으로 사용 할 경우 Overhead 문제가 있으므로 이를 해결하기 위해 UniTaskBehaviour를 상속받아서 사용한다.
+- UniTaskBehaviour는 AddComponent 연산을 수행하지 않으며, 처음 Token 발행시 한번만 GetComponent 연산을 수행한다.
 - MemberFunction
   - CreateToken : CancellationTokenData 가져오기
   - Cancel(int) : Token Cancel
   - Cancel(TokenData) : Token Cancel
 
 ```c#
-public class TestMonoTask : MonoTask<TestMonoTask>{
+public class TestMonoTask : UniTaskBehaviour<TestMonoTask>{
     private CancellationTokenData tokenData;
     
 	async UniTaskVoid TestTask()
@@ -151,3 +150,10 @@ public class TestMonoTask : MonoTask<TestMonoTask>{
 }
 ```
 
+
+
+# UniTaskTokenObject
+
+- Unity의 ScriptableObject와 SerializeField 기능을 사용하여 종속성 없이 GlobalToken과 GroupToken의 key 정보를 공유하기 위해 사용
+- 코드 상으로 key를 관리할 필요가 없다.
+- 하지만 asset 파일을 만들기 때문에 파일 관리가 필요하다.
