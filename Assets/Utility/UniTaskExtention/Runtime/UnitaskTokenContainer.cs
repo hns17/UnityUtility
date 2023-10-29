@@ -248,7 +248,7 @@ public static class UniTaskTokenContainer
     {
         if(scene == null || scene.Value.buildIndex == -1) {
             var activeScene = SceneManager.GetActiveScene();
-            if(activeScene.buildIndex == -1) {
+            if(!activeScene.IsValid()) {
                 throw new InvalidOperationException("not found target scene data");
             }
             return activeScene;
