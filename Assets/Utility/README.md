@@ -15,7 +15,7 @@
    - 자세한 내용은 [Unitask GitPage](https://github.com/Cysharp/UniTask)를 확인
 
 2. UnityUtility 추가
-   - upm git : https://github.com/hns17/UnityUtility.git?path=Assets/Utility
+   - url : https://github.com/hns17/UnityUtility.git?path=Assets/Utility
      - 위와 동일한 방법으로 추가
 
 
