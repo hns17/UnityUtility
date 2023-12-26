@@ -1,9 +1,9 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEditor;
 
 /**
- *  @brief  : Grphic Component의 RaycastTarget 설정이 가능한 토글박스를 Hierachy에 표시.
+ *  @brief  : Grphic Component의 RaycastTarget 설정이 가능한 토글박스를 Hierarchy에 표시.
  *  @ref    : https://baba-s.hatenablog.com/entry/2019/04/01/092000
  */
 public static class GraphicRaycastTargetToggle
@@ -35,5 +35,6 @@ public static class GraphicRaycastTargetToggle
         if (raycastTarget == com.raycastTarget) return;
 
         com.raycastTarget = raycastTarget;
+        EditorUtility.SetDirty(com);
     }
 }
