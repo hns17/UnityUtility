@@ -172,7 +172,7 @@ public static class UniTaskTokenContainer
          *  @param  tokenID : 찾으려는 token id
          *  @return 찾은 tokenInfo
          */
-        private CancellationTokenHandler GetTokenInfo(int tokenID)
+        internal CancellationTokenHandler GetTokenInfo(int tokenID)
         {
             //check scene token
             if(sceneToken != null && sceneToken.TokenID == tokenID) {
@@ -333,5 +333,24 @@ public static class UniTaskTokenContainer
     public static bool Cancel(in CancellationTokenData tokenData)
     {
         return Cancel(tokenData.TokenID);
+    }
+
+    public static bool IsCancelled(CancellationTokenData tokenData)
+    {
+        foreach (var token in globalTokens)
+        {
+            if(token.Value.TokenID == tokenData.TokenID) {
+                return false;
+            }
+        }
+
+        foreach (var sceneToken in sceneCancellationTokenHandlers)
+        {
+            if(sceneToken.Value.GetTokenInfo(tokenData.TokenID) == null) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 }
